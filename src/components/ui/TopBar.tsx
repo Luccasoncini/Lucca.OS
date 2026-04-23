@@ -1,4 +1,5 @@
 import { useUIStore } from '@/store/ui.store'
+import { useIsMobile } from '@/hooks/useIsMobile'
 
 interface TopBarProps {
   onOpenPalette: () => void
@@ -6,6 +7,7 @@ interface TopBarProps {
 
 export function TopBar({ onOpenPalette }: TopBarProps) {
   const { theme, toggleTheme } = useUIStore()
+  const isMobile = useIsMobile()
 
   return (
     <header
@@ -29,26 +31,28 @@ export function TopBar({ onOpenPalette }: TopBarProps) {
       </span>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <button
-          onClick={onOpenPalette}
-          style={{
-            border: '1px solid var(--border)',
-            backgroundColor: 'var(--surface-2)',
-            color: 'var(--text-muted)',
-            height: 32,
-            padding: '0 10px',
-            borderRadius: 8,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 6,
-            fontSize: 12,
-            cursor: 'pointer',
-            fontFamily: 'monospace',
-          }}
-          aria-label="Open command palette"
-        >
-          <span>⌘K</span>
-        </button>
+        {!isMobile && (
+          <button
+            onClick={onOpenPalette}
+            style={{
+              border: '1px solid var(--border)',
+              backgroundColor: 'var(--surface-2)',
+              color: 'var(--text-muted)',
+              height: 32,
+              padding: '0 10px',
+              borderRadius: 8,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              fontSize: 12,
+              cursor: 'pointer',
+              fontFamily: 'monospace',
+            }}
+            aria-label="Open command palette"
+          >
+            <span>⌘K</span>
+          </button>
+        )}
 
         <button
           onClick={toggleTheme}

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useUIStore } from '@/store/ui.store'
+import { useIsMobile } from '@/hooks/useIsMobile'
 
 function Clock() {
   const [time, setTime] = useState(() => new Date())
@@ -32,6 +33,7 @@ const INTENT_COLORS: Record<string, string> = {
 
 export function StatusBar() {
   const { intent } = useUIStore()
+  const isMobile = useIsMobile()
   const color = INTENT_COLORS[intent] ?? '#64748b'
 
   return (
@@ -58,15 +60,18 @@ export function StatusBar() {
       }}
     >
       {/* left */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <span style={{ display: 'flex', alignItems: 'center', gap: 5, color: '#34d399' }}>
           <span style={{ fontSize: 8, lineHeight: 1 }}>●</span>
           connected
         </span>
 
-        <span style={{ color: 'var(--border)' }}>|</span>
-
-        <span>model: claude-sonnet-4-6</span>
+        {!isMobile && (
+          <>
+            <span style={{ color: 'var(--border)' }}>|</span>
+            <span>model: claude-sonnet-4-6</span>
+          </>
+        )}
       </div>
 
       {/* center */}
@@ -87,11 +92,13 @@ export function StatusBar() {
       </div>
 
       {/* right */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-        <span>lucca.os v1.0.0</span>
-
-        <span style={{ color: 'var(--border)' }}>|</span>
-
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+        {!isMobile && (
+          <>
+            <span>lucca.os v1.0.0</span>
+            <span style={{ color: 'var(--border)' }}>|</span>
+          </>
+        )}
         <Clock />
       </div>
     </div>

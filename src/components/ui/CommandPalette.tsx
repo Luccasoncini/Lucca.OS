@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useUIStore } from '@/store/ui.store'
+import { useIsMobile } from '@/hooks/useIsMobile'
 
 interface Command {
   id: string
@@ -73,6 +74,7 @@ interface CommandPaletteProps {
 
 export function CommandPalette({ open, onClose }: CommandPaletteProps) {
   const { toggleTheme, setQueuedMessage, requestReset } = useUIStore()
+  const isMobile = useIsMobile()
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState(0)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -178,12 +180,13 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
             style={{
               position: 'fixed',
-              top: '18%',
-              left: '50%',
-              transform: 'translateX(-50%)',
+              top: isMobile ? '10%' : '18%',
+              left: isMobile ? 12 : '50%',
+              right: isMobile ? 12 : 'auto',
+              transform: isMobile ? 'none' : 'translateX(-50%)',
               zIndex: 61,
-              width: '100%',
-              maxWidth: 560,
+              width: isMobile ? 'auto' : '100%',
+              maxWidth: isMobile ? '100%' : 560,
               backgroundColor: 'var(--surface)',
               border: '1px solid var(--border)',
               borderRadius: 16,

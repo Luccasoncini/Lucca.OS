@@ -126,7 +126,15 @@ export function BootSequence({ onComplete }: BootSequenceProps) {
             justifyContent: 'center',
           }}
         >
-          <div style={{ width: 420, display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <div
+            style={{
+              width: '90%',
+              maxWidth: 420,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 6,
+            }}
+          >
             {LINES.map((line, i) =>
               visibleLines.includes(i) ? (
                 <TerminalLine key={i} text={line.text} type={line.type} result={line.result} />

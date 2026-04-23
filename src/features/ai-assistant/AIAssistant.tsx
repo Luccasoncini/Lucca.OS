@@ -6,6 +6,7 @@ import { askLucca, type Message } from '@/services/ai.service'
 import { ActionButtons } from '@/components/ui/ActionButtons'
 import { detectIntent, ACTION_BUTTONS, type Intent } from '@/utils/intent'
 import { useUIStore } from '@/store/ui.store'
+import { useIsMobile } from '@/hooks/useIsMobile'
 
 const SUGGESTIONS = [
   { icon: '💼', text: 'Quero contratar você. Me conta sobre seu perfil.' },
@@ -61,6 +62,7 @@ function LuccaAvatar({ size = 32 }: { size?: number }) {
 
 export function AIAssistant() {
   const { intent, setIntent, queuedMessage, setQueuedMessage, resetCount } = useUIStore()
+  const isMobile = useIsMobile()
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -177,8 +179,8 @@ export function AIAssistant() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                padding: '48px 24px 32px',
-                gap: 36,
+                padding: isMobile ? '32px 16px 24px' : '48px 24px 32px',
+                gap: isMobile ? 24 : 36,
               }}
             >
               {/* avatar + heading */}
@@ -213,7 +215,7 @@ export function AIAssistant() {
                     transition={{ delay: 0.2 }}
                     style={{
                       color: 'var(--text)',
-                      fontSize: 36,
+                      fontSize: isMobile ? 26 : 36,
                       fontWeight: 600,
                       letterSpacing: '-0.5px',
                       margin: 0,
@@ -251,11 +253,11 @@ export function AIAssistant() {
                   width: '100%',
                   maxWidth: 560,
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(2, 1fr)',
+                  gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
                   gap: 8,
                 }}
               >
-                {SUGGESTIONS.map((s, i) => (
+                {(isMobile ? SUGGESTIONS.slice(0, 4) : SUGGESTIONS).map((s, i) => (
                   <motion.button
                     key={s.text}
                     initial={{ opacity: 0, y: 8 }}
@@ -523,7 +525,7 @@ export function AIAssistant() {
         style={{
           position: 'relative',
           zIndex: 2,
-          padding: '12px 24px 20px',
+          padding: isMobile ? '10px 12px 16px' : '12px 24px 20px',
           borderTop: '1px solid var(--border)',
           backgroundColor: 'var(--bg)',
         }}
