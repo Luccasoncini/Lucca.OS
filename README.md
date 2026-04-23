@@ -1,73 +1,116 @@
-# React + TypeScript + Vite
+# lucca.os
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Portfólio interativo com IA. Uma interface de chat que substitui páginas estáticas — tudo passa pela conversa.
 
-Currently, two official plugins are available:
+**[→ lucca-os.vercel.app](https://lucca-os.vercel.app)**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## O problema com portfólios tradicionais
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Portfólios estáticos mostram o que você fez. Não mostram como você pensa, como você toma decisões, ou como é trabalhar com você.
 
-## Expanding the ESLint configuration
+O Lucca.OS resolve isso com uma interface de chat alimentada por Claude (Anthropic), onde qualquer pessoa pode conversar diretamente com a IA treinada com minha experiência real — projetos, stack, decisões técnicas, disponibilidade para contratação.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## O que tem aqui
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+**Interface**
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+- Chat com streaming em tempo real via Claude Sonnet
+- Partículas 3D que reorganizam em formações diferentes conforme o contexto da conversa (nebulosa → anéis → grid → hélice)
+- Boot sequence estilo terminal ao carregar
+- Status bar com intenção detectada, modelo ativo e relógio
+- `⌘K` command palette com atalhos de navegação
+- Tema dark/light
+- Partículas reagem ao clique
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+**IA**
+
+- Detecção de intenção (contato, projetos, contratação) que muda o visual em tempo real
+- Botões de ação contextuais após cada resposta
+- Escopo estrito: só responde sobre minha carreira e projetos
+
+**Infraestrutura**
+
+- `dev-agent`: lê issues com label `agent:build`, gera código com Claude e abre PR automaticamente
+- `review-agent`: revisa cada PR com Claude e posta comentário de code review
+- Commits semânticos enforçados com commitlint + husky
+- CI/CD via GitHub Actions
+
+## Stack
+
+| Camada    | Tecnologia                           |
+| --------- | ------------------------------------ |
+| UI        | React 19 + TypeScript                |
+| 3D        | Three.js + React Three Fiber         |
+| Animações | Framer Motion                        |
+| Estado    | Zustand                              |
+| IA        | Claude API (Anthropic) com streaming |
+| Build     | Vite 8                               |
+| Deploy    | Vercel                               |
+| Qualidade | ESLint, Prettier, commitlint, husky  |
+
+## Rodando localmente
+
+```bash
+git clone https://github.com/luccasoncini/lucca-os
+cd lucca-os
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Crie um `.env` na raiz:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```env
+VITE_ANTHROPIC_API_KEY=sk-ant-...
 ```
+
+```bash
+npm run dev
+```
+
+Acesse `http://localhost:5173`.
+
+> A chave da API Anthropic é necessária para o chat funcionar. Você pode obter uma em [console.anthropic.com](https://console.anthropic.com).
+
+## Agents
+
+### dev-agent
+
+Cria código a partir de issues do GitHub. Para usar:
+
+1. Abra uma issue descrevendo o que precisa ser feito
+2. Adicione a label `agent:build`
+3. O agent lê a issue, gera o código com Claude, cria uma branch e abre um PR
+
+### review-agent
+
+Dispara automaticamente em todo PR aberto ou atualizado. Claude analisa o diff e posta um comentário de code review com observações sobre qualidade, segurança e sugestões.
+
+## Estrutura
+
+```
+src/
+├── components/
+│   ├── 3d/          # Background3D — sistema de partículas
+│   └── ui/          # TopBar, StatusBar, BootSequence, CommandPalette, ActionButtons
+├── features/
+│   └── ai-assistant/ # Chat principal
+├── services/
+│   └── ai.service.ts # Integração Claude API
+├── store/
+│   └── ui.store.ts   # Estado global (tema, intent, comandos)
+└── utils/
+    └── intent.ts     # Detecção de intenção e action buttons
+
+agents/
+├── dev-agent/        # Geração de código via issues
+└── review-agent/     # Code review automático
+
+.github/workflows/
+├── agent-dev.yml
+└── agent-review.yml
+```
+
+## Licença
+
+MIT — fique à vontade para se inspirar, mas o conteúdo (experiência, projetos, dados pessoais) é meu.
