@@ -1,12 +1,25 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { AIAssistant } from '@/features/ai-assistant/AIAssistant'
 import { TopBar } from '@/components/ui/TopBar'
 import { StatusBar } from '@/components/ui/StatusBar'
 import { Background3D } from '@/components/3d/Background3D'
 import { BootSequence } from '@/components/ui/BootSequence'
+import { CommandPalette } from '@/components/ui/CommandPalette'
 
 export default function App() {
   const [booted, setBooted] = useState(false)
+  const [paletteOpen, setPaletteOpen] = useState(false)
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault()
+        setPaletteOpen(prev => !prev)
+      }
+    }
+    window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [])
 
   return (
     <div
@@ -21,7 +34,7 @@ export default function App() {
     >
       {!booted && <BootSequence onComplete={() => setBooted(true)} />}
       <Background3D />
-      <TopBar />
+      <TopBar onOpenPalette={() => setPaletteOpen(true)} />
       <main
         style={{
           display: 'flex',
@@ -34,6 +47,7 @@ export default function App() {
         <AIAssistant />
       </main>
       <StatusBar />
+      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
     </div>
   )
 }

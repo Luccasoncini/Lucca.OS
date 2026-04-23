@@ -9,6 +9,10 @@ interface UIStore {
   toggleTheme: () => void
   intent: Intent
   setIntent: (intent: Intent) => void
+  queuedMessage: string | null
+  setQueuedMessage: (msg: string | null) => void
+  resetCount: number
+  requestReset: () => void
 }
 
 export const useUIStore = create<UIStore>()(
@@ -23,6 +27,10 @@ export const useUIStore = create<UIStore>()(
         }),
       intent: 'default',
       setIntent: (intent: Intent) => set({ intent }),
+      queuedMessage: null,
+      setQueuedMessage: (msg: string | null) => set({ queuedMessage: msg }),
+      resetCount: 0,
+      requestReset: () => set(state => ({ resetCount: state.resetCount + 1 })),
     }),
     {
       name: 'lucca-os-ui',

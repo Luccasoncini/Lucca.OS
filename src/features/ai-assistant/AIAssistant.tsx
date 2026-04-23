@@ -60,7 +60,7 @@ function LuccaAvatar({ size = 32 }: { size?: number }) {
 }
 
 export function AIAssistant() {
-  const { intent, setIntent } = useUIStore()
+  const { intent, setIntent, queuedMessage, setQueuedMessage, resetCount } = useUIStore()
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -68,10 +68,28 @@ export function AIAssistant() {
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const cancelRef = useRef(false)
+  const sendRef = useRef<(text: string) => void>(() => {})
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  useEffect(() => {
+    if (!queuedMessage) return
+    setQueuedMessage(null)
+    sendRef.current(queuedMessage)
+  }, [queuedMessage, setQueuedMessage])
+
+  useEffect(() => {
+    if (resetCount === 0) return
+    cancelRef.current = true
+    const id = setTimeout(() => {
+      setMessages([])
+      setStarted(false)
+      setLoading(false)
+    }, 0)
+    return () => clearTimeout(id)
+  }, [resetCount])
 
   async function send(text: string) {
     if (!text.trim() || loading) return
@@ -107,6 +125,10 @@ export function AIAssistant() {
       inputRef.current?.focus()
     }
   }
+
+  useEffect(() => {
+    sendRef.current = send
+  })
 
   return (
     <section
