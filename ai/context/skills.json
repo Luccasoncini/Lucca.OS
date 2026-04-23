@@ -1,0 +1,8 @@
+{
+  "core": ["React", "TypeScript", "Node.js"],
+  "styling": ["Tailwind CSS", "Framer Motion", "CSS Modules"],
+  "3d": ["React Three Fiber", "Three.js"],
+  "ai": ["Claude API", "prompt engineering", "context injection"],
+  "tooling": ["Vite", "ESLint", "Prettier", "GitHub Actions"],
+  "practices": ["Conventional Commits", "CI/CD", "code review", "agile"]
+}

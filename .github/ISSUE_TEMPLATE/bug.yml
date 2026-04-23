@@ -1,0 +1,42 @@
+name: Bug Report
+description: Algo não está funcionando corretamente
+labels: ["bug"]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Descrição do bug
+      placeholder: O que aconteceu?
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Como reproduzir
+      placeholder: |
+        1. Acesse '...'
+        2. Clique em '...'
+        3. Veja o erro
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Comportamento esperado
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Onde está o bug?
+      options:
+        - ai-assistant
+        - projects
+        - thinking
+        - playground
+        - hire-mode
+        - agents
+        - infrastructure

@@ -1,0 +1,39 @@
+name: AI Review Agent
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    name: Claude Code Review
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Get changed files
+        id: diff
+        run: |
+          git diff origin/${{ github.base_ref }}...HEAD --name-only > changed_files.txt
+          git diff origin/${{ github.base_ref }}...HEAD > full_diff.txt
+          echo "files=$(cat changed_files.txt | tr '\n' ',')" >> $GITHUB_OUTPUT
+
+      - name: Run AI Review
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: node agents/review-agent/index.mjs

@@ -1,0 +1,54 @@
+name: Feature Request
+description: Nova funcionalidade para o Lucca.OS
+labels: ["feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Preencha os campos abaixo para que o **Dev Agent** possa implementar corretamente.
+
+  - type: input
+    id: title
+    attributes:
+      label: Funcionalidade
+      placeholder: ex. Adicionar animação de entrada na seção de projetos
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema que resolve
+      placeholder: Qual é o problema ou lacuna que essa feature endereça?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solução esperada
+      placeholder: Descreva o comportamento esperado. Seja específico — o agent vai usar isso para implementar.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Escopo
+      options:
+        - ai-assistant
+        - projects
+        - thinking
+        - playground
+        - hire-mode
+        - agents
+        - infrastructure
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: agent
+    attributes:
+      label: Dev Agent
+      options:
+        - label: Quero que o Dev Agent implemente essa feature automaticamente (adicione a label `agent:build`)

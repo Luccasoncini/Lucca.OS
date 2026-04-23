@@ -1,0 +1,12 @@
+[
+  {
+    "id": "lucca-os",
+    "title": "Lucca.OS",
+    "description": "Portfolio interativo que funciona como um sistema operacional de desenvolvedor",
+    "problem": "Portfólios tradicionais não transmitem como um dev pensa e resolve problemas",
+    "solution": "Sistema com IA integrada, agents automatizados e estrutura de código que é em si parte do portfólio",
+    "techs": ["React", "TypeScript", "Claude API", "GitHub Actions", "Framer Motion"],
+    "impact": "Visitantes interagem com a IA. Devs que entram no repo veem commits semânticos, PRs automáticos e agents documentados.",
+    "aiInsights": true
+  }
+]
