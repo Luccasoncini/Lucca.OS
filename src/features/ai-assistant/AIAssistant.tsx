@@ -67,6 +67,7 @@ export function AIAssistant() {
   const [started, setStarted] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const cancelRef = useRef(false)
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -74,6 +75,8 @@ export function AIAssistant() {
 
   async function send(text: string) {
     if (!text.trim() || loading) return
+
+    cancelRef.current = false
 
     const userMessage: Message = { role: 'user', content: text.trim() }
     const newMessages = [...messages, userMessage]
@@ -87,18 +90,22 @@ export function AIAssistant() {
     setMessages(prev => [...prev, { role: 'assistant', content: '' }])
 
     await askLucca(newMessages, chunk => {
+      if (cancelRef.current) return
       setMessages(prev => {
+        if (prev.length === 0) return prev
         const updated = [...prev]
         updated[updated.length - 1] = {
           role: 'assistant',
-          content: updated[updated.length - 1].content + chunk,
+          content: (updated[updated.length - 1]?.content ?? '') + chunk,
         }
         return updated
       })
     })
 
-    setLoading(false)
-    inputRef.current?.focus()
+    if (!cancelRef.current) {
+      setLoading(false)
+      inputRef.current?.focus()
+    }
   }
 
   return (
@@ -517,8 +524,10 @@ export function AIAssistant() {
             {started && (
               <motion.button
                 onClick={() => {
+                  cancelRef.current = true
                   setMessages([])
                   setStarted(false)
+                  setLoading(false)
                 }}
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.92 }}
