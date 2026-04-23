@@ -1,11 +1,61 @@
 [
   {
-    "role": "Desenvolvedor Front-end",
-    "focus": "React, TypeScript, UX de sistemas complexos",
+    "role": "Desenvolvedor Front-end Pleno",
+    "company": "Grupo All Discovery",
+    "period": "Abr 2025 — Atualmente",
+    "stack": [
+      "React",
+      "TypeScript",
+      "Material UI",
+      "Node.js",
+      "Express",
+      "TypeORM",
+      "PostgreSQL",
+      "OpenAI API"
+    ],
     "highlights": [
-      "Construção de interfaces para sistemas de alta complexidade",
-      "Foco em performance, acessibilidade e experiência de usuário",
-      "Integração com APIs e serviços de IA"
+      "Plataforma SaaS para análise patrimonial, inteligência jurídica e automação de processos",
+      "Fluxos complexos de autenticação e envio de OTP via SMS",
+      "Integrações com APIs de dados financeiros, veiculares e jurídicos",
+      "Funcionalidades com OpenAI para geração de relatórios estratégicos",
+      "Atuação no backend: Node.js, Express, TypeORM, PostgreSQL",
+      "Decisões de arquitetura, refatorações estruturais e organização de módulos críticos"
+    ]
+  },
+  {
+    "role": "Desenvolvedor React",
+    "company": "Moderniza Group",
+    "period": "Dez 2022 — Abr 2024",
+    "stack": ["React", "TypeScript", "Node.js", "PostgreSQL", "REST APIs"],
+    "highlights": [
+      "Integração do ERP interno com módulo de e-commerce em plataforma completa e escalável",
+      "Construção de plataforma de configuração visual estilo WordPress para autonomia do cliente",
+      "Desenvolvimento do módulo de cobrança automática (faturas, pagamentos, rotinas financeiras)",
+      "Componentização React com foco em padrões, performance e velocidade de desenvolvimento",
+      "APIs REST organizadas e escaláveis para PostgreSQL",
+      "Liderança de apresentações e produção de documentação técnica"
+    ]
+  },
+  {
+    "role": "Desenvolvedor Front-end React (Estágio)",
+    "company": "Moderniza Group",
+    "period": "Jul 2022 — Nov 2022",
+    "stack": ["React", "REST APIs"],
+    "highlights": [
+      "Componentes reutilizáveis em React para projetos de grande escala",
+      "Integração de APIs REST para fluxos completos com dados dinâmicos",
+      "Melhorias de performance, responsividade e acessibilidade"
+    ]
+  },
+  {
+    "role": "Desenvolvedor Web (Estágio)",
+    "company": "CRT Comunicação",
+    "period": "Dez 2021 — Mai 2022",
+    "stack": ["WordPress", "HTML", "CSS", "JavaScript"],
+    "highlights": [
+      "E-mail marketing focado em conversão e responsividade",
+      "Landing pages otimizadas para velocidade e geração de leads",
+      "Sites WordPress com temas personalizados e integrações de plugins"
     ]
   }
 ]

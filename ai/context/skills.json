@@ -1,8 +1,16 @@
 {
-  "core": ["React", "TypeScript", "Node.js"],
-  "styling": ["Tailwind CSS", "Framer Motion", "CSS Modules"],
-  "3d": ["React Three Fiber", "Three.js"],
-  "ai": ["Claude API", "prompt engineering", "context injection"],
-  "tooling": ["Vite", "ESLint", "Prettier", "GitHub Actions"],
-  "practices": ["Conventional Commits", "CI/CD", "code review", "agile"]
+  "core": ["React", "TypeScript", "JavaScript"],
+  "styling": ["Material UI", "Tailwind CSS", "Framer Motion", "Styled-components", "CSS Modules"],
+  "backend": ["Node.js", "Express", "TypeORM", "PostgreSQL"],
+  "ai": ["Claude API", "OpenAI API", "prompt engineering", "IA aplicada a produtos"],
+  "apis": ["REST", "WebSocket", "integrações complexas com APIs externas"],
+  "tooling": ["Git", "GitHub Actions", "n8n", "Vite", "Postman"],
+  "practices": [
+    "Clean Code",
+    "Design Systems",
+    "Componentização avançada",
+    "Metodologias Ágeis",
+    "Liderança técnica de módulos"
+  ],
+  "automation": ["n8n", "pipelines internos", "GitHub Actions", "CI/CD"]
 }
