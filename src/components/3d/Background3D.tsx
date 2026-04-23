@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
+import { Canvas, useFrame, useThree } from '@react-three/fiber'
 import * as THREE from 'three'
 import { useUIStore } from '@/store/ui.store'
 import type { Intent } from '@/utils/intent'
@@ -89,8 +89,12 @@ function buildTargetPositions(intent: Intent): Float32Array {
   return positions
 }
 
+const CLICK_RADIUS = 3.5
+const CLICK_STRENGTH = 3.2
+
 function Particles() {
   const { intent } = useUIStore()
+  const { camera } = useThree()
   const geoRef = useRef<THREE.BufferGeometry>(null)
   const pointsRef = useRef<THREE.Points>(null)
   const mouseRef = useRef({ x: 0, y: 0 })
@@ -114,6 +118,38 @@ function Particles() {
     window.addEventListener('mousemove', handleMouseMove)
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      // Convert screen position to world space on the z=0 plane
+      const ndcX = (e.clientX / window.innerWidth) * 2 - 1
+      const ndcY = -((e.clientY / window.innerHeight) * 2 - 1)
+      const vec = new THREE.Vector3(ndcX, ndcY, 0.5).unproject(camera)
+      const dir = vec.sub(camera.position).normalize()
+      const distance = -(camera.position.z / dir.z)
+      const worldPos = camera.position.clone().addScaledVector(dir, distance)
+
+      const wx = worldPos.x
+      const wy = worldPos.y
+      const cur = currentPositions.current
+
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        const ix = i * 3
+        const dx = cur[ix] - wx
+        const dy = cur[ix + 1] - wy
+        const d = Math.sqrt(dx * dx + dy * dy)
+        if (d < CLICK_RADIUS && d > 0.01) {
+          const force = (1 - d / CLICK_RADIUS) * CLICK_STRENGTH
+          cur[ix] += (dx / d) * force
+          cur[ix + 1] += (dy / d) * force
+          cur[ix + 2] += (Math.random() - 0.5) * force * 0.6
+        }
+      }
+    }
+
+    window.addEventListener('click', handleClick)
+    return () => window.removeEventListener('click', handleClick)
+  }, [camera])
 
   useFrame(({ clock }) => {
     if (!geoRef.current || !pointsRef.current) return
