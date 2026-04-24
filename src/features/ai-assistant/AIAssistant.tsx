@@ -10,12 +10,12 @@ import { useUIStore } from '@/store/ui.store'
 import { useIsMobile } from '@/hooks/useIsMobile'
 
 const SUGGESTIONS = [
-  { icon: '💼', text: 'Quero contratar você. Me conta sobre seu perfil.' },
-  { icon: '🚀', text: 'Quais projetos você já desenvolveu?' },
-  { icon: '🛠', text: 'Qual sua stack principal?' },
-  { icon: '🤖', text: 'Como funciona a IA desse portfólio?' },
-  { icon: '📬', text: 'Como entro em contato com você?' },
-  { icon: '⚡', text: 'O que te diferencia de outros devs?' },
+  { icon: '💼', text: 'Tô contratando. O que você me oferece?' },
+  { icon: '🔧', text: 'Me conta um problema técnico difícil que você resolveu.' },
+  { icon: '⚡', text: 'Como você foi parar no desenvolvimento?' },
+  { icon: '🤖', text: 'IA vai substituir desenvolvedores?' },
+  { icon: '🔭', text: 'O que é Spec-Driven Development?' },
+  { icon: '🚀', text: 'Por que seu portfólio é um chat de IA?' },
 ]
 
 function TypingDots() {
