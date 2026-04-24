@@ -61,13 +61,26 @@ function LuccaAvatar({ size = 32 }: { size?: number }) {
   )
 }
 
+const STORAGE_KEY = 'lucca-os:conversation'
+
+function loadConversation(): { messages: Message[]; started: boolean } {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY)
+    if (!raw) return { messages: [], started: false }
+    return JSON.parse(raw) as { messages: Message[]; started: boolean }
+  } catch {
+    return { messages: [], started: false }
+  }
+}
+
 export function AIAssistant() {
   const { intent, setIntent, queuedMessage, setQueuedMessage, resetCount } = useUIStore()
   const isMobile = useIsMobile()
-  const [messages, setMessages] = useState<Message[]>([])
+  const saved = loadConversation()
+  const [messages, setMessages] = useState<Message[]>(saved.messages)
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
-  const [started, setStarted] = useState(false)
+  const [started, setStarted] = useState(saved.started)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const cancelRef = useRef(false)
@@ -76,6 +89,11 @@ export function AIAssistant() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
+
+  useEffect(() => {
+    if (messages.length === 0 && !started) return
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ messages, started }))
+  }, [messages, started])
 
   useEffect(() => {
     if (!queuedMessage) return
@@ -90,6 +108,7 @@ export function AIAssistant() {
       setMessages([])
       setStarted(false)
       setLoading(false)
+      localStorage.removeItem(STORAGE_KEY)
     }, 0)
     return () => clearTimeout(id)
   }, [resetCount])
