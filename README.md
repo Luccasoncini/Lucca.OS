@@ -17,17 +17,30 @@ O Lucca.OS resolve isso com uma interface de chat alimentada por Claude (Anthrop
 **Interface**
 
 - Chat com streaming em tempo real via Claude Sonnet
-- Partículas 3D que reorganizam em formações diferentes conforme o contexto da conversa (nebulosa → anéis → grid → hélice)
+- Partículas 3D interativas que reorganizam em formações conforme o contexto (nebulosa → anéis → grid → hélice)
 - Boot sequence estilo terminal ao carregar
-- Status bar com intenção detectada, modelo ativo e relógio
+- Status bar com intenção detectada, modelo ativo, feed de commits ao vivo e relógio
 - `⌘K` command palette com atalhos de navegação
 - Tema dark/light
-- Partículas reagem ao clique
+- Persistência de conversa via localStorage
+
+**Painel de Projetos**
+
+- Drawer lateral com cards detalhados de todos os projetos
+- Abre via intent detectada na conversa ou pelo `⌘K`
+- Cards com tipo (pessoal / empresa / freelance), stack, período e links
+
+**Contato**
+
+- Formulário de contato inline integrado ao EmailJS
+- Aparece contextualmente quando a intenção de contato é detectada
+- Download de CV direto pelo chat ou pelo `⌘K`
 
 **IA**
 
-- Detecção de intenção (contato, projetos, contratação) que muda o visual em tempo real
+- Detecção de intenção (contato, projetos, contratação) que muda o visual e abre painéis em tempo real
 - Botões de ação contextuais após cada resposta
+- Sugestões iniciais para guiar a conversa
 - Escopo estrito: só responde sobre minha carreira e projetos
 
 **Infraestrutura**
@@ -36,6 +49,8 @@ O Lucca.OS resolve isso com uma interface de chat alimentada por Claude (Anthrop
 - `review-agent`: revisa cada PR com Claude e posta comentário de code review
 - Commits semânticos enforçados com commitlint + husky
 - CI/CD via GitHub Actions
+- Google Analytics 4 para métricas de visitantes
+- SEO completo: JSON-LD (Person schema), Open Graph, Twitter Card, sitemap, robots.txt
 
 ## Stack
 
@@ -46,6 +61,8 @@ O Lucca.OS resolve isso com uma interface de chat alimentada por Claude (Anthrop
 | Animações | Framer Motion                        |
 | Estado    | Zustand                              |
 | IA        | Claude API (Anthropic) com streaming |
+| Contato   | EmailJS                              |
+| Analytics | Google Analytics 4                   |
 | Build     | Vite 8                               |
 | Deploy    | Vercel                               |
 | Qualidade | ESLint, Prettier, commitlint, husky  |
@@ -62,6 +79,11 @@ Crie um `.env` na raiz:
 
 ```env
 VITE_ANTHROPIC_API_KEY=sk-ant-...
+
+# Opcional — necessário para o formulário de contato funcionar
+VITE_EMAILJS_SERVICE_ID=...
+VITE_EMAILJS_TEMPLATE_ID=...
+VITE_EMAILJS_PUBLIC_KEY=...
 ```
 
 ```bash
@@ -92,11 +114,17 @@ Dispara automaticamente em todo PR aberto ou atualizado. Claude analisa o diff e
 src/
 ├── components/
 │   ├── 3d/          # Background3D — sistema de partículas
-│   └── ui/          # TopBar, StatusBar, BootSequence, CommandPalette, ActionButtons
+│   └── ui/          # TopBar, StatusBar, BootSequence, CommandPalette,
+│                    # ActionButtons, ProjectPanel, ContactForm
+├── data/
+│   └── projects.ts  # Lista de projetos com metadados
 ├── features/
 │   └── ai-assistant/ # Chat principal
+├── hooks/
+│   ├── useGithubActivity.ts # Feed de commits ao vivo
+│   └── useIsMobile.ts
 ├── services/
-│   └── ai.service.ts # Integração Claude API
+│   └── ai.service.ts # Integração Claude API + system prompt
 ├── store/
 │   └── ui.store.ts   # Estado global (tema, intent, comandos)
 └── utils/
@@ -109,6 +137,10 @@ agents/
 .github/workflows/
 ├── agent-dev.yml
 └── agent-review.yml
+
+public/
+├── robots.txt
+└── sitemap.xml
 ```
 
 ## Licença
