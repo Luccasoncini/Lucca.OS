@@ -36,7 +36,7 @@ export function StatusBar() {
   const { intent } = useUIStore()
   const isMobile = useIsMobile()
   const color = INTENT_COLORS[intent] ?? '#64748b'
-  const { timeAgo } = useGithubActivity('luccasoncini/lucca-os')
+  const { timeAgo } = useGithubActivity('luccasoncini/Lucca.OS')
 
   return (
     <div

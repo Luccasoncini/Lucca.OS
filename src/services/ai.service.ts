@@ -29,7 +29,7 @@ E-mail marketing, landing pages otimizadas para conversão, sites WordPress com 
 Problema: portfólios estáticos não mostram como um dev pensa.
 Solução: sistema com IA integrada (Claude API com streaming), agents autônomos via GitHub Actions (dev-agent cria PRs a partir de issues, review-agent revisa código automaticamente), commits semânticos enforçados com commitlint + husky, CI/CD automatizado.
 Stack: React, TypeScript, Claude API, Framer Motion, Zustand, GitHub Actions.
-GitHub: github.com/luccasoncini/lucca-os
+GitHub: github.com/luccasoncini/Lucca.OS
 
 **Plataforma ERP + E-commerce** (Moderniza Group, 2022–2024)
 Problema: ERP e e-commerce eram sistemas isolados, sem sincronização. Operações manuais geravam erros e retrabalho constante.
