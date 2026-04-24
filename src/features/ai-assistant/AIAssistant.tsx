@@ -5,6 +5,7 @@ import remarkGfm from 'remark-gfm'
 import { askLucca, type Message } from '@/services/ai.service'
 import { ActionButtons } from '@/components/ui/ActionButtons'
 import { ContactForm } from '@/components/ui/ContactForm'
+import { ProjectPanel } from '@/components/ui/ProjectPanel'
 import { detectIntent, ACTION_BUTTONS, type Intent } from '@/utils/intent'
 import { useUIStore } from '@/store/ui.store'
 import { useIsMobile } from '@/hooks/useIsMobile'
@@ -81,6 +82,7 @@ export function AIAssistant() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [started, setStarted] = useState(saved.started)
+  const [projectPanelOpen, setProjectPanelOpen] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const cancelRef = useRef(false)
@@ -108,10 +110,17 @@ export function AIAssistant() {
       setMessages([])
       setStarted(false)
       setLoading(false)
+      setProjectPanelOpen(false)
       localStorage.removeItem(STORAGE_KEY)
     }, 0)
     return () => clearTimeout(id)
   }, [resetCount])
+
+  useEffect(() => {
+    if (intent !== 'projects' || loading || !started) return
+    const id = setTimeout(() => setProjectPanelOpen(true), 0)
+    return () => clearTimeout(id)
+  }, [intent, loading, started])
 
   async function send(text: string) {
     if (!text.trim() || loading) return
@@ -153,514 +162,526 @@ export function AIAssistant() {
   })
 
   return (
-    <section
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        flex: 1,
-        overflow: 'hidden',
-        position: 'relative',
-      }}
-    >
-      {/* dot grid */}
-      <div
+    <>
+      <ProjectPanel open={projectPanelOpen} onClose={() => setProjectPanelOpen(false)} />
+      <section
         style={{
-          position: 'absolute',
-          inset: 0,
-          backgroundImage: 'radial-gradient(circle, var(--border) 1px, transparent 1px)',
-          backgroundSize: '28px 28px',
-          opacity: 0.6,
-          pointerEvents: 'none',
-        }}
-      />
-
-      {/* scrollable content */}
-      <div
-        style={{
-          flex: 1,
-          overflowY: 'auto',
           display: 'flex',
           flexDirection: 'column',
+          flex: 1,
+          overflow: 'hidden',
           position: 'relative',
-          zIndex: 1,
         }}
       >
-        <AnimatePresence mode="wait">
-          {!started ? (
-            <motion.div
-              key="hero"
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -16, transition: { duration: 0.2 } }}
-              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-              style={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: isMobile ? '32px 16px 24px' : '48px 24px 32px',
-                gap: isMobile ? 24 : 36,
-              }}
-            >
-              {/* avatar + heading */}
-              <div
-                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}
-              >
-                <motion.div
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: 0.1, duration: 0.4, ease: 'backOut' }}
-                  style={{
-                    width: 64,
-                    height: 64,
-                    borderRadius: 18,
-                    background: 'linear-gradient(135deg, var(--accent), #a855f7)',
-                    boxShadow: '0 0 48px color-mix(in srgb, var(--accent) 25%, transparent)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    color: '#fff',
-                    fontSize: 26,
-                    fontWeight: 700,
-                  }}
-                >
-                  L
-                </motion.div>
+        {/* dot grid */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            backgroundImage: 'radial-gradient(circle, var(--border) 1px, transparent 1px)',
+            backgroundSize: '28px 28px',
+            opacity: 0.6,
+            pointerEvents: 'none',
+          }}
+        />
 
-                <div style={{ textAlign: 'center' }}>
-                  <motion.h1
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    style={{
-                      color: 'var(--text)',
-                      fontSize: isMobile ? 26 : 36,
-                      fontWeight: 600,
-                      letterSpacing: '-0.5px',
-                      margin: 0,
-                      marginBottom: 8,
-                    }}
-                  >
-                    Oi, eu sou o{' '}
-                    <span
-                      style={{
-                        background: 'linear-gradient(90deg, var(--accent), #a855f7)',
-                        WebkitBackgroundClip: 'text',
-                        WebkitTextFillColor: 'transparent',
-                      }}
-                    >
-                      Lucca
-                    </span>
-                  </motion.h1>
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                    style={{ color: 'var(--text-muted)', fontSize: 15, margin: 0 }}
-                  >
-                    Desenvolvedor front-end · React · TypeScript · IA
-                  </motion.p>
-                </div>
-              </div>
-
-              {/* suggestion cards */}
+        {/* scrollable content */}
+        <div
+          style={{
+            flex: 1,
+            overflowY: 'auto',
+            display: 'flex',
+            flexDirection: 'column',
+            position: 'relative',
+            zIndex: 1,
+          }}
+        >
+          <AnimatePresence mode="wait">
+            {!started ? (
               <motion.div
-                initial={{ opacity: 0, y: 12 }}
+                key="hero"
+                initial={{ opacity: 0, y: 24 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.35 }}
+                exit={{ opacity: 0, y: -16, transition: { duration: 0.2 } }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
                 style={{
-                  width: '100%',
-                  maxWidth: 560,
-                  display: 'grid',
-                  gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
-                  gap: 8,
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: isMobile ? '32px 16px 24px' : '48px 24px 32px',
+                  gap: isMobile ? 24 : 36,
                 }}
               >
-                {(isMobile ? SUGGESTIONS.slice(0, 4) : SUGGESTIONS).map((s, i) => (
-                  <motion.button
-                    key={s.text}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4 + i * 0.05 }}
-                    onClick={() => send(s.text)}
+                {/* avatar + heading */}
+                <div
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    gap: 16,
+                  }}
+                >
+                  <motion.div
+                    initial={{ scale: 0.8, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    transition={{ delay: 0.1, duration: 0.4, ease: 'backOut' }}
                     style={{
-                      border: '1px solid var(--border)',
-                      backgroundColor: 'var(--surface)',
-                      color: 'var(--text-muted)',
-                      padding: '12px 14px',
-                      borderRadius: 12,
-                      fontSize: 13,
-                      textAlign: 'left',
-                      cursor: 'pointer',
-                      transition: 'all 0.15s',
+                      width: 64,
+                      height: 64,
+                      borderRadius: 18,
+                      background: 'linear-gradient(135deg, var(--accent), #a855f7)',
+                      boxShadow: '0 0 48px color-mix(in srgb, var(--accent) 25%, transparent)',
                       display: 'flex',
-                      alignItems: 'flex-start',
-                      gap: 8,
-                      lineHeight: 1.4,
-                    }}
-                    onMouseEnter={e => {
-                      e.currentTarget.style.borderColor = 'var(--accent)'
-                      e.currentTarget.style.color = 'var(--text)'
-                      e.currentTarget.style.backgroundColor = 'var(--surface-2)'
-                    }}
-                    onMouseLeave={e => {
-                      e.currentTarget.style.borderColor = 'var(--border)'
-                      e.currentTarget.style.color = 'var(--text-muted)'
-                      e.currentTarget.style.backgroundColor = 'var(--surface)'
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#fff',
+                      fontSize: 26,
+                      fontWeight: 700,
                     }}
                   >
-                    <span style={{ fontSize: 15, lineHeight: 1.3 }}>{s.icon}</span>
-                    <span>{s.text}</span>
-                  </motion.button>
-                ))}
+                    L
+                  </motion.div>
+
+                  <div style={{ textAlign: 'center' }}>
+                    <motion.h1
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 }}
+                      style={{
+                        color: 'var(--text)',
+                        fontSize: isMobile ? 26 : 36,
+                        fontWeight: 600,
+                        letterSpacing: '-0.5px',
+                        margin: 0,
+                        marginBottom: 8,
+                      }}
+                    >
+                      Oi, eu sou o{' '}
+                      <span
+                        style={{
+                          background: 'linear-gradient(90deg, var(--accent), #a855f7)',
+                          WebkitBackgroundClip: 'text',
+                          WebkitTextFillColor: 'transparent',
+                        }}
+                      >
+                        Lucca
+                      </span>
+                    </motion.h1>
+                    <motion.p
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 0.3 }}
+                      style={{ color: 'var(--text-muted)', fontSize: 15, margin: 0 }}
+                    >
+                      Desenvolvedor front-end · React · TypeScript · IA
+                    </motion.p>
+                  </div>
+                </div>
+
+                {/* suggestion cards */}
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.35 }}
+                  style={{
+                    width: '100%',
+                    maxWidth: 560,
+                    display: 'grid',
+                    gridTemplateColumns: isMobile ? '1fr' : 'repeat(2, 1fr)',
+                    gap: 8,
+                  }}
+                >
+                  {(isMobile ? SUGGESTIONS.slice(0, 4) : SUGGESTIONS).map((s, i) => (
+                    <motion.button
+                      key={s.text}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4 + i * 0.05 }}
+                      onClick={() => send(s.text)}
+                      style={{
+                        border: '1px solid var(--border)',
+                        backgroundColor: 'var(--surface)',
+                        color: 'var(--text-muted)',
+                        padding: '12px 14px',
+                        borderRadius: 12,
+                        fontSize: 13,
+                        textAlign: 'left',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s',
+                        display: 'flex',
+                        alignItems: 'flex-start',
+                        gap: 8,
+                        lineHeight: 1.4,
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.borderColor = 'var(--accent)'
+                        e.currentTarget.style.color = 'var(--text)'
+                        e.currentTarget.style.backgroundColor = 'var(--surface-2)'
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.borderColor = 'var(--border)'
+                        e.currentTarget.style.color = 'var(--text-muted)'
+                        e.currentTarget.style.backgroundColor = 'var(--surface)'
+                      }}
+                    >
+                      <span style={{ fontSize: 15, lineHeight: 1.3 }}>{s.icon}</span>
+                      <span>{s.text}</span>
+                    </motion.button>
+                  ))}
+                </motion.div>
               </motion.div>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="chat"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              style={{
-                padding: '24px 24px 16px',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: 20,
-              }}
-            >
-              <div
+            ) : (
+              <motion.div
+                key="chat"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
                 style={{
-                  maxWidth: 640,
-                  margin: '0 auto',
-                  width: '100%',
+                  padding: '24px 24px 16px',
                   display: 'flex',
                   flexDirection: 'column',
                   gap: 20,
                 }}
               >
-                {messages.map((msg, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.2 }}
-                    style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
-                  >
-                    <div
-                      style={{
-                        display: 'flex',
-                        gap: 10,
-                        flexDirection: msg.role === 'user' ? 'row-reverse' : 'row',
-                        alignItems: 'flex-end',
-                      }}
+                <div
+                  style={{
+                    maxWidth: 640,
+                    margin: '0 auto',
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: 20,
+                  }}
+                >
+                  {messages.map((msg, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2 }}
+                      style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
                     >
-                      {msg.role === 'assistant' && <LuccaAvatar />}
-
                       <div
                         style={{
-                          maxWidth: '78%',
-                          minWidth: 0,
-                          overflow: 'hidden',
-                          wordBreak: 'break-word',
-                          padding: '10px 14px',
-                          borderRadius:
-                            msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
-                          fontSize: 14,
-                          lineHeight: 1.6,
-                          ...(msg.role === 'user'
-                            ? {
-                                background: 'linear-gradient(135deg, var(--accent), #7c3aed)',
-                                color: '#fff',
-                                whiteSpace: 'pre-wrap',
-                              }
-                            : {
-                                backgroundColor: 'var(--surface)',
-                                border: '1px solid var(--border)',
-                                color: 'var(--text)',
-                              }),
+                          display: 'flex',
+                          gap: 10,
+                          flexDirection: msg.role === 'user' ? 'row-reverse' : 'row',
+                          alignItems: 'flex-end',
                         }}
                       >
-                        {msg.role === 'user' ? (
-                          msg.content
-                        ) : msg.content ? (
-                          <ReactMarkdown
-                            remarkPlugins={[remarkGfm]}
-                            components={{
-                              p: ({ children }) => (
-                                <p style={{ margin: '0 0 8px', lineHeight: 1.6 }}>{children}</p>
-                              ),
-                              h2: ({ children }) => (
-                                <h2
-                                  style={{
-                                    color: 'var(--text)',
-                                    fontSize: 15,
-                                    fontWeight: 600,
-                                    margin: '12px 0 6px',
-                                  }}
-                                >
-                                  {children}
-                                </h2>
-                              ),
-                              h3: ({ children }) => (
-                                <h3
-                                  style={{
-                                    color: 'var(--text)',
-                                    fontSize: 14,
-                                    fontWeight: 600,
-                                    margin: '10px 0 4px',
-                                  }}
-                                >
-                                  {children}
-                                </h3>
-                              ),
-                              strong: ({ children }) => (
-                                <strong style={{ color: 'var(--text)', fontWeight: 600 }}>
-                                  {children}
-                                </strong>
-                              ),
-                              ul: ({ children }) => (
-                                <ul
-                                  style={{
-                                    margin: '4px 0 8px',
-                                    paddingLeft: 18,
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: 2,
-                                  }}
-                                >
-                                  {children}
-                                </ul>
-                              ),
-                              ol: ({ children }) => (
-                                <ol
-                                  style={{
-                                    margin: '4px 0 8px',
-                                    paddingLeft: 18,
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    gap: 2,
-                                  }}
-                                >
-                                  {children}
-                                </ol>
-                              ),
-                              li: ({ children }) => <li style={{ lineHeight: 1.5 }}>{children}</li>,
-                              code: ({ children, className }) => {
-                                const isInline = !className
-                                return isInline ? (
-                                  <code
+                        {msg.role === 'assistant' && <LuccaAvatar />}
+
+                        <div
+                          style={{
+                            maxWidth: '78%',
+                            minWidth: 0,
+                            overflow: 'hidden',
+                            wordBreak: 'break-word',
+                            padding: '10px 14px',
+                            borderRadius:
+                              msg.role === 'user' ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+                            fontSize: 14,
+                            lineHeight: 1.6,
+                            ...(msg.role === 'user'
+                              ? {
+                                  background: 'linear-gradient(135deg, var(--accent), #7c3aed)',
+                                  color: '#fff',
+                                  whiteSpace: 'pre-wrap',
+                                }
+                              : {
+                                  backgroundColor: 'var(--surface)',
+                                  border: '1px solid var(--border)',
+                                  color: 'var(--text)',
+                                }),
+                          }}
+                        >
+                          {msg.role === 'user' ? (
+                            msg.content
+                          ) : msg.content ? (
+                            <ReactMarkdown
+                              remarkPlugins={[remarkGfm]}
+                              components={{
+                                p: ({ children }) => (
+                                  <p style={{ margin: '0 0 8px', lineHeight: 1.6 }}>{children}</p>
+                                ),
+                                h2: ({ children }) => (
+                                  <h2
                                     style={{
-                                      backgroundColor: 'var(--surface-2)',
-                                      border: '1px solid var(--border)',
-                                      borderRadius: 4,
-                                      padding: '1px 5px',
-                                      fontSize: 12,
-                                      fontFamily: 'monospace',
+                                      color: 'var(--text)',
+                                      fontSize: 15,
+                                      fontWeight: 600,
+                                      margin: '12px 0 6px',
                                     }}
                                   >
                                     {children}
-                                  </code>
-                                ) : (
-                                  <code style={{ fontFamily: 'monospace', fontSize: 12 }}>
+                                  </h2>
+                                ),
+                                h3: ({ children }) => (
+                                  <h3
+                                    style={{
+                                      color: 'var(--text)',
+                                      fontSize: 14,
+                                      fontWeight: 600,
+                                      margin: '10px 0 4px',
+                                    }}
+                                  >
                                     {children}
-                                  </code>
-                                )
-                              },
-                              pre: ({ children }) => (
-                                <pre
-                                  style={{
-                                    backgroundColor: 'var(--surface-2)',
-                                    border: '1px solid var(--border)',
-                                    borderRadius: 8,
-                                    padding: '10px 12px',
-                                    overflowX: 'auto',
-                                    margin: '6px 0 10px',
-                                    fontSize: 12,
-                                    fontFamily: 'monospace',
-                                    lineHeight: 1.6,
-                                    maxWidth: '100%',
-                                  }}
-                                >
-                                  {children}
-                                </pre>
-                              ),
-                              hr: () => (
-                                <hr
-                                  style={{
-                                    border: 'none',
-                                    borderTop: '1px solid var(--border)',
-                                    margin: '10px 0',
-                                  }}
-                                />
-                              ),
+                                  </h3>
+                                ),
+                                strong: ({ children }) => (
+                                  <strong style={{ color: 'var(--text)', fontWeight: 600 }}>
+                                    {children}
+                                  </strong>
+                                ),
+                                ul: ({ children }) => (
+                                  <ul
+                                    style={{
+                                      margin: '4px 0 8px',
+                                      paddingLeft: 18,
+                                      display: 'flex',
+                                      flexDirection: 'column',
+                                      gap: 2,
+                                    }}
+                                  >
+                                    {children}
+                                  </ul>
+                                ),
+                                ol: ({ children }) => (
+                                  <ol
+                                    style={{
+                                      margin: '4px 0 8px',
+                                      paddingLeft: 18,
+                                      display: 'flex',
+                                      flexDirection: 'column',
+                                      gap: 2,
+                                    }}
+                                  >
+                                    {children}
+                                  </ol>
+                                ),
+                                li: ({ children }) => (
+                                  <li style={{ lineHeight: 1.5 }}>{children}</li>
+                                ),
+                                code: ({ children, className }) => {
+                                  const isInline = !className
+                                  return isInline ? (
+                                    <code
+                                      style={{
+                                        backgroundColor: 'var(--surface-2)',
+                                        border: '1px solid var(--border)',
+                                        borderRadius: 4,
+                                        padding: '1px 5px',
+                                        fontSize: 12,
+                                        fontFamily: 'monospace',
+                                      }}
+                                    >
+                                      {children}
+                                    </code>
+                                  ) : (
+                                    <code style={{ fontFamily: 'monospace', fontSize: 12 }}>
+                                      {children}
+                                    </code>
+                                  )
+                                },
+                                pre: ({ children }) => (
+                                  <pre
+                                    style={{
+                                      backgroundColor: 'var(--surface-2)',
+                                      border: '1px solid var(--border)',
+                                      borderRadius: 8,
+                                      padding: '10px 12px',
+                                      overflowX: 'auto',
+                                      margin: '6px 0 10px',
+                                      fontSize: 12,
+                                      fontFamily: 'monospace',
+                                      lineHeight: 1.6,
+                                      maxWidth: '100%',
+                                    }}
+                                  >
+                                    {children}
+                                  </pre>
+                                ),
+                                hr: () => (
+                                  <hr
+                                    style={{
+                                      border: 'none',
+                                      borderTop: '1px solid var(--border)',
+                                      margin: '10px 0',
+                                    }}
+                                  />
+                                ),
+                              }}
+                            >
+                              {msg.content}
+                            </ReactMarkdown>
+                          ) : loading && i === messages.length - 1 ? (
+                            <TypingDots />
+                          ) : null}
+                        </div>
+
+                        {msg.role === 'user' && (
+                          <div
+                            style={{
+                              width: 32,
+                              height: 32,
+                              borderRadius: '50%',
+                              backgroundColor: 'var(--surface-2)',
+                              border: '1px solid var(--border)',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              fontSize: 14,
+                              flexShrink: 0,
                             }}
                           >
-                            {msg.content}
-                          </ReactMarkdown>
-                        ) : loading && i === messages.length - 1 ? (
-                          <TypingDots />
-                        ) : null}
+                            👤
+                          </div>
+                        )}
                       </div>
 
-                      {msg.role === 'user' && (
-                        <div
-                          style={{
-                            width: 32,
-                            height: 32,
-                            borderRadius: '50%',
-                            backgroundColor: 'var(--surface-2)',
-                            border: '1px solid var(--border)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            fontSize: 14,
-                            flexShrink: 0,
-                          }}
-                        >
-                          👤
-                        </div>
-                      )}
-                    </div>
+                      {msg.role === 'assistant' &&
+                        !loading &&
+                        i === messages.length - 1 &&
+                        ACTION_BUTTONS[intent as Intent].length > 0 && (
+                          <>
+                            <ActionButtons
+                              buttons={ACTION_BUTTONS[intent as Intent]}
+                              onMessage={send}
+                            />
+                            {intent === 'contact' && <ContactForm />}
+                          </>
+                        )}
+                    </motion.div>
+                  ))}
+                  <div ref={bottomRef} />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
-                    {msg.role === 'assistant' &&
-                      !loading &&
-                      i === messages.length - 1 &&
-                      ACTION_BUTTONS[intent as Intent].length > 0 && (
-                        <>
-                          <ActionButtons
-                            buttons={ACTION_BUTTONS[intent as Intent]}
-                            onMessage={send}
-                          />
-                          {intent === 'contact' && <ContactForm />}
-                        </>
-                      )}
-                  </motion.div>
-                ))}
-                <div ref={bottomRef} />
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      {/* input bar — normal flow, not absolute */}
-      <div
-        style={{
-          position: 'relative',
-          zIndex: 2,
-          padding: isMobile ? '10px 12px 16px' : '12px 24px 20px',
-          borderTop: '1px solid var(--border)',
-          backgroundColor: 'var(--bg)',
-        }}
-      >
-        <div style={{ maxWidth: 640, margin: '0 auto' }}>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 10,
-              backgroundColor: 'var(--surface)',
-              border: '1px solid var(--border)',
-              borderRadius: 16,
-              padding: '10px 14px',
-              transition: 'border-color 0.15s',
-            }}
-            onFocusCapture={e => (e.currentTarget.style.borderColor = 'var(--accent)')}
-            onBlurCapture={e => (e.currentTarget.style.borderColor = 'var(--border)')}
-          >
-            {started && (
-              <motion.button
-                onClick={() => {
-                  cancelRef.current = true
-                  setMessages([])
-                  setStarted(false)
-                  setLoading(false)
-                  localStorage.removeItem(STORAGE_KEY)
+        {/* input bar — normal flow, not absolute */}
+        <div
+          style={{
+            position: 'relative',
+            zIndex: 2,
+            padding: isMobile ? '10px 12px 16px' : '12px 24px 20px',
+            borderTop: '1px solid var(--border)',
+            backgroundColor: 'var(--bg)',
+          }}
+        >
+          <div style={{ maxWidth: 640, margin: '0 auto' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 10,
+                backgroundColor: 'var(--surface)',
+                border: '1px solid var(--border)',
+                borderRadius: 16,
+                padding: '10px 14px',
+                transition: 'border-color 0.15s',
+              }}
+              onFocusCapture={e => (e.currentTarget.style.borderColor = 'var(--accent)')}
+              onBlurCapture={e => (e.currentTarget.style.borderColor = 'var(--border)')}
+            >
+              {started && (
+                <motion.button
+                  onClick={() => {
+                    cancelRef.current = true
+                    setMessages([])
+                    setStarted(false)
+                    setLoading(false)
+                    localStorage.removeItem(STORAGE_KEY)
+                  }}
+                  whileHover={{ scale: 1.08 }}
+                  whileTap={{ scale: 0.92 }}
+                  title="Nova conversa"
+                  style={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: 10,
+                    border: '1px solid var(--border)',
+                    backgroundColor: 'var(--surface-2)',
+                    color: 'var(--text-muted)',
+                    fontSize: 15,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexShrink: 0,
+                    transition: 'all 0.15s',
+                  }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = '#ef4444'
+                    e.currentTarget.style.color = '#ef4444'
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = 'var(--border)'
+                    e.currentTarget.style.color = 'var(--text-muted)'
+                  }}
+                >
+                  ↺
+                </motion.button>
+              )}
+              <input
+                ref={inputRef}
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send(input)}
+                placeholder={
+                  loading
+                    ? 'Lucca está digitando...'
+                    : 'Pergunte algo sobre mim ou meus projetos...'
+                }
+                disabled={loading}
+                style={{
+                  flex: 1,
+                  background: 'transparent',
+                  border: 'none',
+                  outline: 'none',
+                  color: 'var(--text)',
+                  fontSize: 14,
                 }}
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.92 }}
-                title="Nova conversa"
+              />
+              <motion.button
+                onClick={() => send(input)}
+                disabled={!input.trim() || loading}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 style={{
                   width: 34,
                   height: 34,
                   borderRadius: 10,
-                  border: '1px solid var(--border)',
-                  backgroundColor: 'var(--surface-2)',
-                  color: 'var(--text-muted)',
-                  fontSize: 15,
-                  cursor: 'pointer',
+                  border: 'none',
+                  background:
+                    input.trim() && !loading
+                      ? 'linear-gradient(135deg, var(--accent), #7c3aed)'
+                      : 'var(--border)',
+                  color: '#fff',
+                  fontSize: 16,
+                  cursor: input.trim() && !loading ? 'pointer' : 'default',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                   flexShrink: 0,
-                  transition: 'all 0.15s',
-                }}
-                onMouseEnter={e => {
-                  e.currentTarget.style.borderColor = '#ef4444'
-                  e.currentTarget.style.color = '#ef4444'
-                }}
-                onMouseLeave={e => {
-                  e.currentTarget.style.borderColor = 'var(--border)'
-                  e.currentTarget.style.color = 'var(--text-muted)'
+                  transition: 'background 0.15s',
+                  opacity: !input.trim() || loading ? 0.5 : 1,
                 }}
               >
-                ↺
+                ↑
               </motion.button>
-            )}
-            <input
-              ref={inputRef}
-              value={input}
-              onChange={e => setInput(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && !e.shiftKey && send(input)}
-              placeholder={
-                loading ? 'Lucca está digitando...' : 'Pergunte algo sobre mim ou meus projetos...'
-              }
-              disabled={loading}
-              style={{
-                flex: 1,
-                background: 'transparent',
-                border: 'none',
-                outline: 'none',
-                color: 'var(--text)',
-                fontSize: 14,
-              }}
-            />
-            <motion.button
-              onClick={() => send(input)}
-              disabled={!input.trim() || loading}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              style={{
-                width: 34,
-                height: 34,
-                borderRadius: 10,
-                border: 'none',
-                background:
-                  input.trim() && !loading
-                    ? 'linear-gradient(135deg, var(--accent), #7c3aed)'
-                    : 'var(--border)',
-                color: '#fff',
-                fontSize: 16,
-                cursor: input.trim() && !loading ? 'pointer' : 'default',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0,
-                transition: 'background 0.15s',
-                opacity: !input.trim() || loading ? 0.5 : 1,
-              }}
-            >
-              ↑
-            </motion.button>
-          </div>
+            </div>
 
-          <div style={{ textAlign: 'center', marginTop: 8 }}>
-            <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>
-              Powered by Claude Sonnet
-            </span>
+            <div style={{ textAlign: 'center', marginTop: 8 }}>
+              <span style={{ color: 'var(--text-muted)', fontSize: 12 }}>
+                Powered by Claude Sonnet
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </>
   )
 }
