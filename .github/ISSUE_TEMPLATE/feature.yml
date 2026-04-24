@@ -1,6 +1,6 @@
 name: Feature Request
 description: Nova funcionalidade para o Lucca.OS
-labels: ["feature"]
+labels: ['feature']
 body:
   - type: markdown
     attributes:

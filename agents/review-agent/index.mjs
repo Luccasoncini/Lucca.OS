@@ -56,17 +56,14 @@ ${review}
 ---
 *Revisão automatizada pelo [review-agent](../agents/review-agent/) usando Claude Sonnet*`
 
-  const response = await fetch(
-    `https://api.github.com/repos/${repo}/issues/${prNumber}/comments`,
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${process.env.GH_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ body: comment }),
+  const response = await fetch(`https://api.github.com/repos/${repo}/issues/${prNumber}/comments`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.GH_TOKEN}`,
+      'Content-Type': 'application/json',
     },
-  )
+    body: JSON.stringify({ body: comment }),
+  })
 
   if (!response.ok) {
     throw new Error(`GitHub API error: ${response.status}`)
