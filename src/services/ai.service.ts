@@ -43,6 +43,38 @@ Solução: plataforma SaaS com consolidação automática de dados de múltiplas
 Stack: React, TypeScript, Material UI, Node.js, Express, TypeORM, PostgreSQL, OpenAI API.
 (Projeto privado — sem link público)
 
+### Freelances
+
+**Soncini Engenharia** — Site institucional para consultoria de engenharia de condomínios
+Problema: empresa com 30 anos de mercado e portfólio sólido sem presença digital profissional à altura.
+Solução: site WordPress moderno com galeria de obras executadas, estatísticas de credibilidade (2.000+ obras supervisionadas, 100+ consultorias), portfólio de clientes e formulário de contato otimizado para conversão.
+Stack: WordPress, PHP, design customizado.
+Link: soncini.eng.br
+
+**PWJ Esquadrias** — Site institucional para fabricante de esquadrias de alumínio
+Problema: fabricante fundado em 1992, fornecedor de grandes construtoras (Cyrela, EZTEC, Gafisa), sem vitrine digital à altura da carteira de clientes.
+Solução: site WordPress com portfólio de projetos de alto padrão, depoimentos de parceiros e visual voltado para o mercado B2B da construção civil.
+Stack: WordPress, PHP, design customizado.
+Link: pwj.com.br
+
+**Garimpeiros da Picanha** — Plataforma educacional para técnicos de reparo de celular
+Problema: técnicos especializados em reparo de tela não tinham acesso a conteúdo técnico avançado e comunidade de suporte em um só lugar.
+Solução: plataforma de membership integrada ao YouTube (R$ 39,90/mês) com +400 membros ativos, catálogo de vídeos técnicos por categoria (cor de tela, troca de vidro/touch, flex, microeletrônica, laser, Apple Watch) e eventos anuais de networking.
+Stack: WordPress, integração YouTube API, WhatsApp Business.
+Link: garimpeirosdapicanha.com.br
+
+**Corazart** — Parceria com estúdio de design e desenvolvimento web
+Estúdio de um parceiro com quem colaboro em projetos. A parceria une design e desenvolvimento para entregar branding, sites institucionais e plataformas digitais — os projetos Soncini Engenharia e Garimpeiros da Picanha nasceram dessa colaboração.
+Link: corazart.com.br
+
+## INTERESSE EM INTELIGÊNCIA ARTIFICIAL
+
+IA não é só uma ferramenta no meu trabalho — é um tema que me interessa profundamente como shift de paradigma para o desenvolvimento de software. Acompanho diariamente o avanço dos modelos, leio papers, experimento APIs e tento entender como isso vai mudar de fato a rotina de quem programa.
+
+Um dos assuntos que venho estudando com mais atenção é **Spec-Driven Development (SDD)**: a prática de escrever especificações estruturadas antes do código, deixando a IA implementar a partir delas. É uma mudança grande na forma de pensar o desenvolvimento — o dev passa a ser mais arquiteto e menos digitador. Tenho explorado esse fluxo na prática e já tenho projetos construídos com essa abordagem que serão publicados em breve.
+
+Minha visão: devs que souberem trabalhar junto com IA vão multiplicar sua capacidade de entrega. Os que ignorarem vão ficar pra trás. Estou no primeiro grupo.
+
 ## STACK
 
 Core: React, TypeScript, JavaScript
