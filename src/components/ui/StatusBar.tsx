@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useUIStore } from '@/store/ui.store'
 import { useIsMobile } from '@/hooks/useIsMobile'
 import { useGithubActivity } from '@/hooks/useGithubActivity'
@@ -36,7 +37,20 @@ export function StatusBar() {
   const { intent } = useUIStore()
   const isMobile = useIsMobile()
   const color = INTENT_COLORS[intent] ?? '#64748b'
-  const { timeAgo } = useGithubActivity('luccasoncini/Lucca.OS')
+  const { commits, latest } = useGithubActivity('luccasoncini/Lucca.OS')
+  const [open, setOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    function handleClickOutside(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [open])
 
   return (
     <div
@@ -72,11 +86,143 @@ export function StatusBar() {
           <>
             <span style={{ color: 'var(--border)' }}>|</span>
             <span>model: claude-sonnet-4-6</span>
-            {timeAgo && (
-              <>
+
+            {latest && (
+              <div ref={dropdownRef} style={{ position: 'relative' }}>
                 <span style={{ color: 'var(--border)' }}>|</span>
-                <span>last push: {timeAgo}</span>
-              </>
+                <button
+                  onClick={() => setOpen(prev => !prev)}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    color: open ? 'var(--accent)' : 'var(--text-muted)',
+                    fontFamily: 'monospace',
+                    fontSize: 11,
+                    letterSpacing: '0.03em',
+                    cursor: 'pointer',
+                    padding: '0 4px',
+                    transition: 'color 0.15s',
+                  }}
+                  onMouseEnter={e => (e.currentTarget.style.color = 'var(--accent)')}
+                  onMouseLeave={e => !open && (e.currentTarget.style.color = 'var(--text-muted)')}
+                >
+                  last push: {latest} ↑
+                </button>
+
+                <AnimatePresence>
+                  {open && commits.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 6, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 6, scale: 0.97 }}
+                      transition={{ duration: 0.15 }}
+                      style={{
+                        position: 'absolute',
+                        bottom: 28,
+                        left: 0,
+                        width: 340,
+                        backgroundColor: 'var(--surface)',
+                        border: '1px solid var(--border)',
+                        borderRadius: 10,
+                        overflow: 'hidden',
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.35)',
+                        zIndex: 100,
+                      }}
+                    >
+                      <div
+                        style={{
+                          padding: '8px 12px 6px',
+                          borderBottom: '1px solid var(--border)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: 6,
+                        }}
+                      >
+                        <span style={{ fontSize: 10, color: 'var(--accent)' }}>⌥</span>
+                        <span style={{ fontSize: 10, color: 'var(--text-muted)' }}>
+                          luccasoncini/Lucca.OS — últimos commits
+                        </span>
+                      </div>
+
+                      {commits.map(commit => (
+                        <div
+                          key={commit.sha}
+                          style={{
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            gap: 10,
+                            padding: '7px 12px',
+                            borderBottom: '1px solid var(--border)',
+                            transition: 'background 0.1s',
+                          }}
+                          onMouseEnter={e =>
+                            ((e.currentTarget as HTMLElement).style.backgroundColor =
+                              'var(--surface-2)')
+                          }
+                          onMouseLeave={e =>
+                            ((e.currentTarget as HTMLElement).style.backgroundColor = 'transparent')
+                          }
+                        >
+                          <span
+                            style={{
+                              fontFamily: 'monospace',
+                              fontSize: 10,
+                              color: 'var(--accent)',
+                              flexShrink: 0,
+                              marginTop: 1,
+                            }}
+                          >
+                            {commit.sha}
+                          </span>
+                          <span
+                            style={{
+                              flex: 1,
+                              fontSize: 11,
+                              color: 'var(--text)',
+                              lineHeight: 1.4,
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {commit.message}
+                          </span>
+                          <span
+                            style={{
+                              fontSize: 10,
+                              color: 'var(--text-muted)',
+                              flexShrink: 0,
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            {commit.timeAgo}
+                          </span>
+                        </div>
+                      ))}
+
+                      <div
+                        style={{
+                          padding: '6px 12px',
+                          textAlign: 'right',
+                        }}
+                      >
+                        <a
+                          href="https://github.com/luccasoncini/Lucca.OS/commits/main"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{
+                            fontSize: 10,
+                            color: 'var(--accent)',
+                            textDecoration: 'none',
+                          }}
+                        >
+                          ver todos no GitHub →
+                        </a>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             )}
           </>
         )}
