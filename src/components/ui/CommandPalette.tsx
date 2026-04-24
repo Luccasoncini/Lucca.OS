@@ -10,7 +10,7 @@ interface Command {
   category: string
   message?: string
   href?: string
-  action?: 'reset' | 'theme' | 'download'
+  action?: 'reset' | 'theme' | 'download' | 'projects'
 }
 
 const COMMANDS: Command[] = [
@@ -26,7 +26,7 @@ const COMMANDS: Command[] = [
     icon: '🚀',
     label: 'Ver projetos',
     category: 'Conversar',
-    message: 'Quais projetos você desenvolveu?',
+    action: 'projects',
   },
   {
     id: 'stack',
@@ -71,9 +71,10 @@ const COMMANDS: Command[] = [
 interface CommandPaletteProps {
   open: boolean
   onClose: () => void
+  onOpenProjects: () => void
 }
 
-export function CommandPalette({ open, onClose }: CommandPaletteProps) {
+export function CommandPalette({ open, onClose, onOpenProjects }: CommandPaletteProps) {
   const { toggleTheme, setQueuedMessage, requestReset } = useUIStore()
   const isMobile = useIsMobile()
   const [query, setQuery] = useState('')
@@ -149,6 +150,10 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
       a.href = '/curriculo-lucca-soncini.pdf'
       a.download = 'Curriculo-Lucca-Soncini.pdf'
       a.click()
+      return
+    }
+    if (cmd.action === 'projects') {
+      onOpenProjects()
       return
     }
     if (cmd.message) {

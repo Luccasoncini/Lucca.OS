@@ -5,7 +5,6 @@ import remarkGfm from 'remark-gfm'
 import { askLucca, type Message } from '@/services/ai.service'
 import { ActionButtons } from '@/components/ui/ActionButtons'
 import { ContactForm } from '@/components/ui/ContactForm'
-import { ProjectPanel } from '@/components/ui/ProjectPanel'
 import { detectIntent, ACTION_BUTTONS, type Intent } from '@/utils/intent'
 import { useUIStore } from '@/store/ui.store'
 import { useIsMobile } from '@/hooks/useIsMobile'
@@ -82,7 +81,6 @@ export function AIAssistant() {
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [started, setStarted] = useState(saved.started)
-  const [projectPanelOpen, setProjectPanelOpen] = useState(false)
   const bottomRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const cancelRef = useRef(false)
@@ -110,17 +108,10 @@ export function AIAssistant() {
       setMessages([])
       setStarted(false)
       setLoading(false)
-      setProjectPanelOpen(false)
       localStorage.removeItem(STORAGE_KEY)
     }, 0)
     return () => clearTimeout(id)
   }, [resetCount])
-
-  useEffect(() => {
-    if (intent !== 'projects' || loading || !started) return
-    const id = setTimeout(() => setProjectPanelOpen(true), 0)
-    return () => clearTimeout(id)
-  }, [intent, loading, started])
 
   async function send(text: string) {
     if (!text.trim() || loading) return
@@ -163,7 +154,6 @@ export function AIAssistant() {
 
   return (
     <>
-      <ProjectPanel open={projectPanelOpen} onClose={() => setProjectPanelOpen(false)} />
       <section
         style={{
           display: 'flex',

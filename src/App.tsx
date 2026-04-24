@@ -4,6 +4,8 @@ import { TopBar } from '@/components/ui/TopBar'
 import { StatusBar } from '@/components/ui/StatusBar'
 import { BootSequence } from '@/components/ui/BootSequence'
 import { CommandPalette } from '@/components/ui/CommandPalette'
+import { ProjectPanel } from '@/components/ui/ProjectPanel'
+import { useUIStore } from '@/store/ui.store'
 
 const Background3D = lazy(() =>
   import('@/components/3d/Background3D').then(m => ({ default: m.Background3D })),
@@ -12,6 +14,8 @@ const Background3D = lazy(() =>
 export default function App() {
   const [booted, setBooted] = useState(false)
   const [paletteOpen, setPaletteOpen] = useState(false)
+  const [projectsOpen, setProjectsOpen] = useState(false)
+  const { intent } = useUIStore()
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -23,6 +27,13 @@ export default function App() {
     window.addEventListener('keydown', handler)
     return () => window.removeEventListener('keydown', handler)
   }, [])
+
+  useEffect(() => {
+    if (intent === 'projects') {
+      const id = setTimeout(() => setProjectsOpen(true), 0)
+      return () => clearTimeout(id)
+    }
+  }, [intent])
 
   return (
     <div
@@ -52,7 +63,12 @@ export default function App() {
         <AIAssistant />
       </main>
       <StatusBar />
-      <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
+      <ProjectPanel open={projectsOpen} onClose={() => setProjectsOpen(false)} />
+      <CommandPalette
+        open={paletteOpen}
+        onClose={() => setPaletteOpen(false)}
+        onOpenProjects={() => setProjectsOpen(true)}
+      />
     </div>
   )
 }
