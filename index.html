@@ -38,8 +38,43 @@
     <!-- Canonical -->
     <link rel="canonical" href="https://lucca-os.vercel.app" />
 
+    <!-- Search indexing -->
+    <meta name="robots" content="index, follow" />
+    <meta
+      name="keywords"
+      content="Lucca Soncini, desenvolvedor front-end, React, TypeScript, portfólio, freelance, São Paulo"
+    />
+
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- JSON-LD structured data -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Lucca Dias Soncini",
+        "url": "https://lucca-os.vercel.app",
+        "jobTitle": "Desenvolvedor Front-end",
+        "description": "Desenvolvedor front-end especializado em React e TypeScript. Disponível para CLT, PJ e Freelance.",
+        "knowsAbout": ["React", "TypeScript", "Node.js", "PostgreSQL", "Claude API", "Three.js"],
+        "sameAs": [
+          "https://github.com/luccasoncini",
+          "https://www.linkedin.com/in/lucca-soncini/"
+        ]
+      }
+    </script>
+
+    <!-- Google Analytics 4 -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-9P658Y8HBN"></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+      gtag('config', 'G-9P658Y8HBN')
+    </script>
   </head>
   <body>
     <div id="root"></div>
