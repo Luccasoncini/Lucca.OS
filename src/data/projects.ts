@@ -47,7 +47,7 @@ export const PROJECTS: Project[] = [
     period: '2024',
     description:
       'Plataforma educacional para técnicos de reparo de celular com membership no YouTube. +400 membros ativos. Um dos primeiros projetos desenvolvidos com IA como copiloto.',
-    tags: ['WordPress', 'YouTube API', 'WhatsApp'],
+    tags: ['WordPress', 'WhatsApp'],
     type: 'freelance',
     link: 'https://garimpeirosdapicanha.com.br',
     linkLabel: 'Ver site',
