@@ -10,7 +10,7 @@ interface Command {
   category: string
   message?: string
   href?: string
-  action?: 'reset' | 'theme'
+  action?: 'reset' | 'theme' | 'download'
 }
 
 const COMMANDS: Command[] = [
@@ -49,6 +49,7 @@ const COMMANDS: Command[] = [
     category: 'Conversar',
     message: 'O que te diferencia de outros devs?',
   },
+  { id: 'cv', icon: '📄', label: 'Baixar CV', category: 'Links', action: 'download' },
   { id: 'reset', icon: '↺', label: 'Nova conversa', category: 'Sistema', action: 'reset' },
   { id: 'theme', icon: '◐', label: 'Alternar tema', category: 'Sistema', action: 'theme' },
   {
@@ -141,6 +142,13 @@ export function CommandPalette({ open, onClose }: CommandPaletteProps) {
     }
     if (cmd.action === 'reset') {
       requestReset()
+      return
+    }
+    if (cmd.action === 'download') {
+      const a = document.createElement('a')
+      a.href = '/curriculo-lucca-soncini.pdf'
+      a.download = 'Curriculo-Lucca-Soncini.pdf'
+      a.click()
       return
     }
     if (cmd.message) {

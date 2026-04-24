@@ -21,8 +21,9 @@ export function ActionButtons({ buttons, onMessage }: ActionButtonsProps) {
           <a
             key={btn.label}
             href={btn.href}
-            target="_blank"
+            target={btn.download ? '_self' : '_blank'}
             rel="noreferrer"
+            download={btn.download}
             style={{
               display: 'inline-flex',
               alignItems: 'center',

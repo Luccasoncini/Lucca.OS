@@ -95,7 +95,8 @@ Práticas: Clean Code, Design Systems, Componentização avançada, Metodologias
 
 ## CONTRATAÇÃO
 
-Disponível para: CLT e Freelance
+Regime atual: PJ
+Disponível para: CLT, PJ e Freelance
 Inglês: Intermediário
 Email: luccadiassoncini@gmail.com
 LinkedIn: linkedin.com/in/lucca-soncini

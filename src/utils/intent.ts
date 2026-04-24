@@ -6,6 +6,7 @@ export interface ActionButton {
   href?: string
   message?: string
   variant?: 'default' | 'accent'
+  download?: string
 }
 
 const PATTERNS: Record<Intent, RegExp> = {
@@ -29,17 +30,18 @@ export const ACTION_BUTTONS: Record<Intent, ActionButton[]> = {
   ],
   hire: [
     {
+      label: 'Baixar CV',
+      icon: '📄',
+      href: '/curriculo-lucca-soncini.pdf',
+      download: 'Curriculo-Lucca-Soncini.pdf',
+      variant: 'accent',
+    },
+    {
       label: 'LinkedIn',
       icon: '🔗',
       href: 'https://www.linkedin.com/in/lucca-soncini/',
-      variant: 'accent',
     },
     { label: 'Mandar email', icon: '📧', href: 'mailto:luccadiassoncini@gmail.com' },
-    {
-      label: 'Quais são seus diferenciais?',
-      icon: '⚡',
-      message: 'Quais são seus principais diferenciais como desenvolvedor?',
-    },
   ],
   projects: [
     { label: 'GitHub', icon: '⌥', href: 'https://github.com/luccasoncini', variant: 'accent' },
