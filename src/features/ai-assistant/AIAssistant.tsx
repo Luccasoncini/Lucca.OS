@@ -4,6 +4,7 @@ import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { askLucca, type Message } from '@/services/ai.service'
 import { ActionButtons } from '@/components/ui/ActionButtons'
+import { ContactForm } from '@/components/ui/ContactForm'
 import { detectIntent, ACTION_BUTTONS, type Intent } from '@/utils/intent'
 import { useUIStore } from '@/store/ui.store'
 import { useIsMobile } from '@/hooks/useIsMobile'
@@ -506,10 +507,13 @@ export function AIAssistant() {
                       !loading &&
                       i === messages.length - 1 &&
                       ACTION_BUTTONS[intent as Intent].length > 0 && (
-                        <ActionButtons
-                          buttons={ACTION_BUTTONS[intent as Intent]}
-                          onMessage={send}
-                        />
+                        <>
+                          <ActionButtons
+                            buttons={ACTION_BUTTONS[intent as Intent]}
+                            onMessage={send}
+                          />
+                          {intent === 'contact' && <ContactForm />}
+                        </>
                       )}
                   </motion.div>
                 ))}

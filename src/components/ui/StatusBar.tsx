@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useUIStore } from '@/store/ui.store'
 import { useIsMobile } from '@/hooks/useIsMobile'
+import { useGithubActivity } from '@/hooks/useGithubActivity'
 
 function Clock() {
   const [time, setTime] = useState(() => new Date())
@@ -35,6 +36,7 @@ export function StatusBar() {
   const { intent } = useUIStore()
   const isMobile = useIsMobile()
   const color = INTENT_COLORS[intent] ?? '#64748b'
+  const { timeAgo } = useGithubActivity('luccasoncini/lucca-os')
 
   return (
     <div
@@ -70,6 +72,12 @@ export function StatusBar() {
           <>
             <span style={{ color: 'var(--border)' }}>|</span>
             <span>model: claude-sonnet-4-6</span>
+            {timeAgo && (
+              <>
+                <span style={{ color: 'var(--border)' }}>|</span>
+                <span>last push: {timeAgo}</span>
+              </>
+            )}
           </>
         )}
       </div>
